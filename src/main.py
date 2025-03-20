@@ -4,14 +4,14 @@ from diffusers import StableDiffusionPipeline
 from PIL import Image
 import numpy as np
 
-#Initialize the model
+# Initialize the model
 model_id = "CompVis/stable-diffusion-v1-4"
 pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
 
-Streamlit app
+# Streamlit app
 st.title("Normal to Aesthetic Image Converter")
 
-Upload image
+# Upload image
 image_file = st.file_uploader("Upload a normal image", type=["jpg", "png"])
 
 if image_file:
@@ -25,7 +25,7 @@ if image_file:
 
     # Generate the aesthetic image
     with torch.autocast("cuda"):
-        output = pipe(image, guidance_scale=7.5, num_inference_steps=50)
+        output = pipe(image.unsqueeze(0), guidance_scale=7.5, num_inference_steps=50)  # Add unsqueeze(0) to add batch dimension
 
     # Postprocess the output
     aesthetic_image = output.images[0]
@@ -35,4 +35,9 @@ if image_file:
     st.image(aesthetic_image, caption="Aesthetic Image")
 
     # Download the aesthetic image
-    st.download_button("Download Aesthetic Image", aesthetic_image, file_name="aesthetic_image.png")
+    # Convert the PIL image to bytes for download
+    img_byte_arr = io.BytesIO()
+    aesthetic_image.save(img_byte_arr, format='PNG')
+    img_byte_arr.seek(0)
+
+    st.download_button("Download Aesthetic Image", img_byte_arr, file_name="aesthetic_image.png", mime="image/png")
