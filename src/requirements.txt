@@ -4,3 +4,4 @@ transformers
 diffusers
 Pillow
 accelerate
+diffusers
