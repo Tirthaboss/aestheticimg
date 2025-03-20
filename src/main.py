@@ -4,7 +4,7 @@ from diffusers import StableDiffusionPipeline
 from PIL import Image
 import numpy as np
 
-Initialize the model
+#Initialize the model
 model_id = "CompVis/stable-diffusion-v1-4"
 pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
 
